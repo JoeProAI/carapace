@@ -24,6 +24,8 @@ Every decision lands in an append-only, hash-chained ledger.
 
 ## See it run
 
+![Carapace computing trust verdicts, capability checks, and a hash-chained ledger at runtime](docs/carapace-demo.gif)
+
 ```bash
 npm install
 npm run demo
