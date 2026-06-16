@@ -1,0 +1,33 @@
+{
+  "name": "@openclaw/carapace",
+  "version": "0.1.0",
+  "description": "Carapace: a deterministic memory-integrity firewall for memory-first agents. The shell around your agent's brain.",
+  "type": "module",
+  "license": "MIT",
+  "author": "JoeProAI",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "demo": "tsx examples/demo.ts",
+    "redteam": "tsx examples/redteam.ts"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0"
+  },
+  "openclaw": {
+    "extensions": [
+      "./src/index.ts"
+    ],
+    "release": {
+      "publishToNpm": false
+    }
+  }
+}

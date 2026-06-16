@@ -1,0 +1,9 @@
+{
+  "id": "carapace",
+  "name": "Carapace",
+  "description": "Memory-integrity firewall. Tags provenance, scores trust, gates durable-memory promotion, enforces protected-file integrity, and audits every decision in a tamper-evident ledger.",
+  "version": "0.1.0",
+  "optional": true,
+  "tools": ["carapace"],
+  "hooks": ["memory.write", "memory.search", "file.write", "message.send", "tool.invoke"]
+}
