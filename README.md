@@ -1,5 +1,7 @@
 # Carapace
 
+[![CI](https://github.com/JoeProAI/carapace/actions/workflows/ci.yml/badge.svg)](https://github.com/JoeProAI/carapace/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-informational.svg)](./LICENSE) ![Node](https://img.shields.io/badge/node-%3E%3D22-3c873a.svg)
+
 **The shell around your agent's brain.** A deterministic memory-integrity firewall for memory-first agents.
 
 LlamaFirewall protects the session. Carapace protects the memory. It sits between everything an agent reads and the permanent memory it trusts, and it refuses to let untrusted input become durable belief without earning it.
