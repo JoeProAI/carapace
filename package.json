@@ -6,7 +6,8 @@
   "license": "MIT",
   "author": "JoeProAI",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./adapters/mem0": "./src/adapters/mem0.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -14,7 +15,8 @@
     "test:watch": "vitest",
     "demo": "tsx examples/demo.ts",
     "redteam": "tsx examples/redteam.ts",
-    "bench": "tsx bench/run.ts"
+    "bench": "tsx bench/run.ts",
+    "adapter:demo": "tsx examples/mem0-adapter.ts"
   },
   "dependencies": {},
   "devDependencies": {
