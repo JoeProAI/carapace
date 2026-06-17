@@ -67,7 +67,11 @@ npm run typecheck
 ```
 
 Then `curl http://127.0.0.1:8787/health`. The default local API key is
-`dev-key-local` (set in `wrangler.toml`).
+`dev-key-local`, read from `worker/.dev.vars` (gitignored). Create it with:
+
+```bash
+echo 'CARAPACE_API_KEYS=dev-key-local' > .dev.vars
+```
 
 ## Deploy
 

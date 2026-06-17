@@ -13,7 +13,6 @@ class_name = "LedgerDO"
 tag = "v1"
 new_sqlite_classes = ["LedgerDO"]
 
-# Local/dev API key. In production set real keys with:
-#   wrangler secret put CARAPACE_API_KEYS
-[vars]
-CARAPACE_API_KEYS = "dev-key-local"
+# API keys are NOT hardcoded here so a deploy can never ship a known key.
+# Local dev reads CARAPACE_API_KEYS from worker/.dev.vars (gitignored).
+# Production sets it as a secret:  wrangler secret put CARAPACE_API_KEYS
