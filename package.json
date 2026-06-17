@@ -13,7 +13,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "demo": "tsx examples/demo.ts",
-    "redteam": "tsx examples/redteam.ts"
+    "redteam": "tsx examples/redteam.ts",
+    "bench": "tsx bench/run.ts"
   },
   "dependencies": {},
   "devDependencies": {
