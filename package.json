@@ -15,6 +15,7 @@
     "test:watch": "vitest",
     "demo": "tsx examples/demo.ts",
     "redteam": "tsx examples/redteam.ts",
+    "bench": "tsx bench/run.ts",
     "adapter:demo": "tsx examples/mem0-adapter.ts"
   },
   "dependencies": {},
