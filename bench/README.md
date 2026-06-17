@@ -11,7 +11,7 @@ npm run bench
 
 ## What it measures
 
-### 1. Efficacy — do memory-injection attacks reach durable memory?
+### 1. Efficacy: do memory-injection attacks reach durable memory?
 
 The threat model is MINJA: an attacker plants records in the agent's memory bank
 so a payload is recalled and acted on later. The corpus is a set of
@@ -22,10 +22,10 @@ paper's exact dataset**.
 
 For each attack we compare three defenses:
 
-- **undefended** — a store-everything agent. Every injected record persists.
-- **naive keyword filter** — blocks a few literal phrases, no normalization.
+- **undefended**: a store-everything agent. Every injected record persists.
+- **naive keyword filter**: blocks a few literal phrases, no normalization.
   Representative of a quick in-house guard.
-- **Carapace** — the real path: `onIngress` (provenance + detectors + ledger)
+- **Carapace**: the real path. `onIngress` (provenance + detectors + ledger)
   then `onMemoryWrite` (the promotion gate).
 
 An attack "reaches durable memory" when the promotion verdict is `allow`.
@@ -34,28 +34,28 @@ The reference anchor is MINJA (arXiv:2601.05504), which reports roughly **95%
 injection success against undefended memory agents**. The undefended row here is
 consistent with that.
 
-### 2. Latency — what does the firewall cost per operation?
+### 2. Latency: what does the firewall cost per operation?
 
 Times three paths over many iterations with warmup, using
 `process.hrtime.bigint()`, and reports p50 / p95 / p99 / mean in microseconds:
 
-- **baseline store** — hash the content and keep it. No firewall.
-- **Carapace ingress** — provenance + detectors + ledger append.
-- **Carapace full write** — ingress plus the promotion gate, modelling a real
+- **baseline store**: hash the content and keep it. No firewall.
+- **Carapace ingress**: provenance + detectors + ledger append.
+- **Carapace full write**: ingress plus the promotion gate, modelling a real
   accepted write (authenticated first-party input that promotes).
 
 These are **in-process** figures for the deterministic hot path. There is no
 model detector (the PromptGuard 2 seam is not wired) and no network. A hosted
 Worker adds one HTTP hop on top.
 
-### 3. False positives — is benign content wrongly flagged?
+### 3. False positives: is benign content wrongly flagged?
 
 Benign corpus includes **adversarially-hard** items that carry trigger words
 ("ignore", "system prompt", "update memory", base64-looking ids) in innocent
 contexts, so the rate is not measured on trivially clean text. We report:
 
 - detector false-positive rate over all benign items, and over the hard subset;
-- **legitimate trusted memory wrongly blocked** — for benign content on
+- **legitimate trusted memory wrongly blocked**: for benign content on
   authenticated first-party channels (T0/T1), how often a flag wrongly prevents
   promotion. This is the real cost of a false positive.
 
@@ -68,7 +68,7 @@ just is not promoted to durable memory as fact.
 authenticated `direct` input, the agent's own `filesystem` and `tool` output)
 can be trusted (T0/T1); third-party channels (`web`, `api`, `group`, `ambient`,
 `subagent`) are not, and an attacker cannot authenticate as the principal. In
-the harness, benign first-party content is authenticated and attacks never are —
+the harness, benign first-party content is authenticated and attacks never are,
 which is exactly the asymmetry the firewall is designed around.
 
 ## Honesty notes (printed by the harness, repeated here)
@@ -85,6 +85,6 @@ which is exactly the asymmetry the firewall is designed around.
 
 ## Files
 
-- `corpus.ts` — labelled attacks and benign items (with hard cases).
-- `harness.ts` — timing, percentiles, firewall builder, provenance helpers.
-- `run.ts` — orchestrates the three measurements and prints the report.
+- `corpus.ts`: labelled attacks and benign items (with hard cases).
+- `harness.ts`: timing, percentiles, firewall builder, provenance helpers.
+- `run.ts`: orchestrates the three measurements and prints the report.
