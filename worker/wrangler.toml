@@ -1,0 +1,19 @@
+name = "carapace-firewall"
+main = "src/index.ts"
+# node:crypto (Ed25519 + sha256) is fully supported under nodejs_compat from this date on.
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# Per-tenant hash-chained ledger. SQLite-backed so it runs on the free plan.
+[[durable_objects.bindings]]
+name = "LEDGER"
+class_name = "LedgerDO"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["LedgerDO"]
+
+# Local/dev API key. In production set real keys with:
+#   wrangler secret put CARAPACE_API_KEYS
+[vars]
+CARAPACE_API_KEYS = "dev-key-local"
