@@ -116,6 +116,29 @@ const env = cp.onIngress({ content: webPage, provenance: { source: "crawl4ai:exa
 if (cp.onMemoryWrite({ envelope: env, target: "MEMORY.md" }).verdict !== "allow") skip(env);
 ```
 
+## Drop-in adapter (Mem0)
+
+Most memory layers do not want to learn the five-plane API. The Mem0 adapter wraps an existing client so every `add` passes through the promotion gate first, in roughly three lines. Every other method (search, get, update, delete) is delegated untouched.
+
+```ts
+import MemoryClient from "mem0ai";
+import { withCarapace, localGate } from "@openclaw/carapace/adapters/mem0";
+
+const memory = withCarapace(new MemoryClient({ apiKey }), { gate: localGate() });
+await memory.add(messages, { user_id: "u1" }); // gated in-process, then stored
+```
+
+To run the gate as a hosted service instead of embedding the firewall, swap `localGate()` for `remoteGate({ apiKey, host })` pointed at the Carapace Worker (see `worker/`). The wrapper returns the same client type, so existing code keeps working.
+
+**Provenance is the integrator's job.** The gate decides on provenance, and only you know where each message actually came from. The defaults assume the `user` role is the authenticated principal (T0) and `assistant` is first-party tool output (T1). That is correct for a single-user assistant; it is wrong for a multi-user or adversarial-user product, where you must label untrusted messages with their real channel:
+
+```ts
+// content scraped from the web, not from the principal
+await memory.add(messages, { carapaceProvenance: { channel: "web", authenticated: false } });
+```
+
+With that label, untrusted content cannot reach durable memory even when the heuristic detector misses the payload, because promotion is gated on trust, not on detection. Honest caveat: if you mislabel untrusted input as trusted, the heuristic detector becomes the only backstop, and a heuristic detector is not a guarantee. The adapter gates writes only; reads pass through unchanged. It carries zero runtime dependencies and never imports `mem0ai` (it matches the client structurally). Runnable demo: `npm run adapter:demo`.
+
 ## OpenClaw wiring contract
 
 `createCarapace` returns typed handlers. A thin adapter binds them to gateway hooks, the same pattern the `lobster` plugin uses:
@@ -138,7 +161,7 @@ The agent holds only the Ed25519 public key. Tokens are minted on a separate aut
 
 No fake benchmarks live in this repo. The honest maturity line:
 
-**Real and tested now** (33 passing tests via `npm test`, runnable via `npm run demo`):
+**Real and tested now** (46 passing tests via `npm test`, runnable via `npm run demo`):
 provenance and trust derivation, the promotion gate, trust-aware recall with temporal decay, the hash-chained ledger, and Ed25519 capability tokens. All deterministic. Heuristic injection and exfil detectors are real and honestly limited: they catch obvious patterns, not paraphrase.
 
 **Documented, not yet built** (so you are not misled): the model detector (PromptGuard 2) is a clean seam behind the `Detector` interface, not an implementation here. The composite scorer is ready for it; the model is not wired. Wiring into a live OpenClaw DREAMING pipeline is Phase 1.
