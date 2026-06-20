@@ -9,6 +9,21 @@ compatibility_flags = ["nodejs_compat"]
 name = "LEDGER"
 class_name = "LedgerDO"
 
+# Workers AI: the model-based guard detector composed on top of the heuristics.
+# Inference runs on Cloudflare's edge, so REAL numbers need `wrangler dev --remote`.
+[ai]
+binding = "AI"
+
+[vars]
+# Verified Workers AI guard model. The originally-specced @cf/meta/llama-prompt-guard-2-86m
+# is not in the current catalog; override this var if an account exposes a drop-in guard.
+CARAPACE_MODEL_ID = "@cf/meta/llama-guard-3-8b"
+# Set to "false" to run heuristic-only even with the AI binding present.
+CARAPACE_MODEL_ENABLED = "true"
+# Basic per-tenant rate limit: requests per window (ms).
+CARAPACE_RATE_LIMIT = "120"
+CARAPACE_RATE_WINDOW_MS = "60000"
+
 [[migrations]]
 tag = "v1"
 new_sqlite_classes = ["LedgerDO"]
