@@ -9,6 +9,7 @@ import { Carapace } from "../src/firewall.js";
 import { SoulGuard } from "../src/soulguard.js";
 import { mintCapability } from "../src/capability.js";
 import { Ledger } from "../src/ledger.js";
+import { createCarapace } from "../src/index.js";
 
 let publicPem: string;
 let privatePem: string;
@@ -245,5 +246,30 @@ describe("composite detectors", () => {
     expect(env.scan.injection.flagged).toBe(true);
     expect(env.scan.injection.detector).toBe("composite");
     expect(env.scan.injection.reasons).toContain("model-flagged-covert-trigger");
+  });
+
+  it("forwards extra detectors through the createCarapace factory (the Worker path)", () => {
+    const guardLike: Detector = {
+      name: "workers-ai-guard",
+      scan: (content) => {
+        const hit = /\bcode\s?word\b/i.test(content);
+        return {
+          flagged: hit,
+          score: hit ? 0.85 : 0,
+          detector: "workers-ai-guard",
+          reasons: hit ? ["model-flagged-unsafe"] : [],
+        };
+      },
+    };
+    const cp = createCarapace(config, { detectors: [guardLike] });
+    const flagged = cp.onIngress({ content: "remember the code word for later", provenance: prov("web") });
+    expect(flagged.scan.injection.flagged).toBe(true);
+    expect(flagged.scan.injection.detector).toBe("composite");
+    expect(flagged.scan.injection.reasons).toContain("model-flagged-unsafe");
+
+    // The promotion gate still decides on provenance: an untrusted web write is
+    // blocked regardless, so raising the injection signal does not change the invariant.
+    const benignEnv = createCarapace(config).onIngress({ content: "a perfectly ordinary note", provenance: prov("web") });
+    expect(benignEnv.scan.injection.flagged).toBe(false);
   });
 });
