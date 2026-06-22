@@ -7,7 +7,10 @@ content plus its provenance, and get back a trust verdict and a tamper-evident
 ledger entry.
 
 It wraps the library in `../src` unchanged. Nothing here re-implements security;
-the detector heuristics and the provenance promotion gate are the real ones.
+the detector heuristics and the provenance promotion gate are the real ones. The
+hosted Worker additionally composes a Cloudflare Workers AI model detector on top
+of the heuristics (see "Model detector" below); the npm library stays
+heuristic-only and model-free.
 
 ## Endpoints
 
@@ -17,14 +20,31 @@ the tenant: each key gets its own isolated, append-only ledger.
 | Method | Path                | Body                                                              | Returns |
 | ------ | ------------------- | ----------------------------------------------------------------- | ------- |
 | GET    | `/health`           | none (no auth)                                                    | `{ ok, service, version, ts }` |
-| POST   | `/v1/ingress`       | `{ content, provenance }`                                        | envelope summary (trust, injection, exfil, hash, ledger) |
-| POST   | `/v1/promote`       | `{ content, provenance, target?, corroboration?, touchesIdentity? }` | `{ verdict, reasons, trust, quarantined, hash, ledger }` |
+| POST   | `/v1/ingress`       | `{ content, provenance }`                                        | envelope summary (trust, injection, exfil, hash, ledger, signals) |
+| POST   | `/v1/promote`       | `{ content, provenance, target?, corroboration?, touchesIdentity? }` | `{ verdict, reasons, trust, quarantined, hash, ledger, signals }` |
 | GET    | `/v1/ledger/head`   | none                                                              | `{ head, count }` |
 | GET    | `/v1/ledger/verify` | none                                                              | `{ valid, count }` |
 
 `provenance` is `{ channel, source?, authenticated?, actor?, capturedAt? }`.
 `channel` is one of `direct`, `group`, `ambient`, `web`, `api`, `tool`,
 `subagent`, `filesystem`. `verdict` is `allow`, `quarantine`, or `reject`.
+
+`signals` breaks the injection decision into its arms so heuristic-only and
+heuristic+model can be compared per request:
+`{ heuristic: { flagged, score, reasons }, model: { used, modelId, flagged, score, reasons, error? } }`.
+`model.used` is `false` when the AI binding is absent or the model is disabled.
+
+### Validation and limits
+
+- Malformed bodies are rejected with `400` (non-JSON, non-object, missing or
+  empty `content`, wrong-typed `provenance`/`corroboration`/`touchesIdentity`,
+  invalid `channel` or trust tier).
+- `content` is bounded at 50,000 characters and the raw body at 256 KB; over the
+  limit returns `413`.
+- Each tenant (API key) is rate-limited (default 120 requests / 60s, set via
+  `CARAPACE_RATE_LIMIT` and `CARAPACE_RATE_WINDOW_MS`). Over the limit returns
+  `429` with a `Retry-After` header. The counter lives in the tenant's Durable
+  Object, which is single-threaded so the count cannot race.
 
 ### Example
 
@@ -55,8 +75,16 @@ curl -s https://<your-worker>/v1/promote \
 - **Durable Object** (`src/ledger-do.ts`): one `LedgerDO` per API key holds the
   hash-chained ledger. A Durable Object is single-threaded and strongly
   consistent, so appends are serialized and the chain cannot race. `verify()`
-  recomputes the whole chain from genesis. SQLite-backed so it runs on the free
-  plan.
+  recomputes the whole chain from genesis inside `blockConcurrencyWhile` so its
+  read sweep observes a consistent snapshot and cannot interleave with a
+  concurrent append. The same DO also enforces the per-tenant rate limit.
+  SQLite-backed so it runs on the free plan.
+- **Model detector** (`src/model-detector.ts`): an async wrapper around the
+  Workers AI binding (`env.AI`). Because `Detector.scan` is synchronous on the
+  hot path, the Worker runs the model first and injects the verdict as a
+  precomputed sync `Detector` via `createCarapace(config, { detectors: [...] })`.
+  It fails open (benign, `used: false`) when the binding is missing or the call
+  errors, so the firewall never goes down because the model is unavailable.
 
 ## Run locally
 
@@ -95,8 +123,12 @@ npm run deploy
   latency and a transport-trust assumption. Use the library when you can embed
   it; use the service when "add a URL" is the only integration you want.
 - **Not independently benchmarked.** See `../bench` for a reproducible harness
-  and its honesty notes. The model detector (PromptGuard 2) is still a documented
-  seam, not wired in. Workers AI is a natural place to fill that seam later.
+  and its honesty notes. The model detector is now wired here via Workers AI
+  (`@cf/meta/llama-guard-3-8b`, since the specced `@cf/meta/llama-prompt-guard-2-86m`
+  is not in Cloudflare's current catalog; override with `CARAPACE_MODEL_ID`).
+  Real before/after detection numbers require running against the edge
+  (`wrangler dev --remote` with a Workers-AI-enabled token), then
+  `npm run measure:model` from the repo root against the running Worker.
 - **Capability tokens.** Set `CARAPACE_AUTHORITY_PUBKEY` to verify Ed25519
   capability tokens against a real authority key. Without it the Worker
   generates an ephemeral key per isolate, which is fine for the ingress and

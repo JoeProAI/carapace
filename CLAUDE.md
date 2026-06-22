@@ -9,14 +9,15 @@ Five planes plus a ledger: Ingress (tag provenance + score trust), Recall (trust
 ```
 npm install
 npm run typecheck   # tsc --noEmit, strict
-npm test            # 33 tests across test/carapace.test.ts and test/adversarial.test.ts
+npm test            # unit tests across test/, strict
 npm run demo        # examples/demo.ts — real crypto + ledger
 npm run redteam     # examples/redteam.ts — measured adversarial results
 ```
+The hosted Worker has its own gate in `worker/`: `npm install`, `npm run typecheck`, `npm test`.
 
 ## Working agreements
 - No fake data, no invented benchmarks. Numbers come from a real run or are attributed to cited prior work (LlamaFirewall, arXiv:2601.05504). The README's "What's real today" section is the honesty contract; keep it true.
-- The model detector (PromptGuard 2) is a documented seam behind the `Detector` interface, not built. If you implement it, report measured before/after on the redteam corpus.
+- The model detector is now wired in the hosted Worker (`worker/`) via Cloudflare Workers AI, composed with the heuristics behind the `Detector` interface. The verified model is `@cf/meta/llama-guard-3-8b` (the spec's `@cf/meta/llama-prompt-guard-2-86m` is not in the current catalog); the id is configurable via `CARAPACE_MODEL_ID`. The core npm library in `src/` stays heuristic-only and zero-runtime-deps. Real before/after recall requires a Worker run with a live AI binding (`wrangler dev --remote`); the measurement script is `npm run measure:model`.
 - The OpenClaw adapter is blocked until ../openclaw-ui-rebuild is built (dist/plugin-sdk types). Do not guess the SDK.
 - Strict TS, named exports, no `any`, no em dashes in prose. Small commits.
 

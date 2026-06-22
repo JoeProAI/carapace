@@ -161,10 +161,12 @@ The agent holds only the Ed25519 public key. Tokens are minted on a separate aut
 
 No fake benchmarks live in this repo. The honest maturity line:
 
-**Real and tested now** (46 passing tests via `npm test`, runnable via `npm run demo`):
+**Real and tested now** (56 passing tests via `npm test`, runnable via `npm run demo`):
 provenance and trust derivation, the promotion gate, trust-aware recall with temporal decay, the hash-chained ledger, and Ed25519 capability tokens. All deterministic. Heuristic injection and exfil detectors are real and honestly limited: they catch obvious patterns, not paraphrase.
 
-**Documented, not yet built** (so you are not misled): the model detector (PromptGuard 2) is a clean seam behind the `Detector` interface, not an implementation here. The composite scorer is ready for it; the model is not wired. Wiring into a live OpenClaw DREAMING pipeline is Phase 1.
+**The model detector is now wired in the hosted Worker** (`worker/`), not in the npm library. The library in `src/` stays heuristic-only and zero-runtime-deps (`node:crypto` only) and takes no dependency on any model. The Worker composes a Cloudflare Workers AI guard classifier (`@cf/meta/llama-guard-3-8b`, configurable via `CARAPACE_MODEL_ID`) with the heuristics behind the same `Detector` interface, so the model verdict raises the injection signal while the promotion gate still decides on provenance. Note: the originally specced `@cf/meta/llama-prompt-guard-2-86m` is not in Cloudflare's current catalog, so the verified guard model is used as the default.
+
+**Honest status of the before/after numbers:** Workers AI only runs on Cloudflare's edge. The measurement harness (`npm run measure:model`, see [`bench/measure-model.ts`](bench/measure-model.ts)) fires the bench corpus at a running Worker and reports detection recall and benign false-positive rate for heuristic-only vs heuristic+model, reading the real per-arm breakdown the Worker returns. Producing real before/after numbers requires running the Worker with a live AI binding (`wrangler dev --remote` and a Workers-AI-enabled `CLOUDFLARE_API_TOKEN`). The token available in CI is scoped to Workers/zone edits and is rejected by the Workers AI inference API, so those numbers are not filled in here; the harness prints the heuristic-only floor and states plainly that the model arm was not exercised rather than inventing an improvement.
 
 **On the numbers:** figures cited in `SPEC.md` (attack-success rates, MINJA) are published results from prior work (LlamaFirewall, arXiv:2601.05504) that motivate Carapace. They are not Carapace's own benchmarks. Carapace has not been independently benchmarked yet; when it is, the numbers and the method to reproduce them will live here.
 

@@ -16,6 +16,7 @@
     "demo": "tsx examples/demo.ts",
     "redteam": "tsx examples/redteam.ts",
     "bench": "tsx bench/run.ts",
+    "measure:model": "tsx bench/measure-model.ts",
     "adapter:demo": "tsx examples/mem0-adapter.ts"
   },
   "dependencies": {},

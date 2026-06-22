@@ -1,7 +1,7 @@
 import { Carapace } from "./firewall.js";
 import { Ledger } from "./ledger.js";
 import { SoulGuard, type ProtectedFile } from "./soulguard.js";
-import type { CarapaceConfig, LedgerEntry, OutboundAction, PromotionCandidate, Provenance, RecallItem } from "./types.js";
+import type { CarapaceConfig, Detector, LedgerEntry, OutboundAction, PromotionCandidate, Provenance, RecallItem } from "./types.js";
 
 /**
  * OpenClaw extension entry.
@@ -24,6 +24,13 @@ export interface CreateCarapaceOptions {
   secretRegistry?: readonly string[];
   /** Sink for ledger entries, e.g. append to carapace.ledger on disk. */
   persistLedger?: (entry: LedgerEntry) => void;
+  /**
+   * Extra orthogonal ingress detectors merged with the built-in heuristic. This
+   * is the documented seam: a model classifier (e.g. a Workers AI guard) lives
+   * outside this zero-dependency core and is injected here as a Detector. The
+   * core never imports or depends on any model.
+   */
+  detectors?: readonly Detector[];
 }
 
 export interface CarapaceExtension {
@@ -47,6 +54,7 @@ export const createCarapace = (config: CarapaceConfig, options: CreateCarapaceOp
     ledger,
     ...(soulguard ? { soulguard } : {}),
     ...(options.secretRegistry ? { secretRegistry: options.secretRegistry } : {}),
+    ...(options.detectors ? { detectors: options.detectors } : {}),
   });
 
   const tool = {

@@ -41,7 +41,13 @@ export interface Provenance {
   capturedAt: string; // ISO 8601
 }
 
-export type DetectorName = "heuristic-injection" | "heuristic-exfil" | "promptguard2" | "gemma3-classifier" | "composite";
+export type DetectorName =
+  | "heuristic-injection"
+  | "heuristic-exfil"
+  | "promptguard2"
+  | "gemma3-classifier"
+  | "workers-ai-guard"
+  | "composite";
 
 export interface DetectorResult {
   flagged: boolean;
