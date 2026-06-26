@@ -1,4 +1,4 @@
-# Carapace benchmark harness
+# Carapax benchmark harness
 
 A reproducible harness that measures the three numbers a security buyer asks
 about. It runs the real firewall over a labelled corpus and prints only values
@@ -25,7 +25,7 @@ For each attack we compare three defenses:
 - **undefended**: a store-everything agent. Every injected record persists.
 - **naive keyword filter**: blocks a few literal phrases, no normalization.
   Representative of a quick in-house guard.
-- **Carapace**: the real path. `onIngress` (provenance + detectors + ledger)
+- **Carapax**: the real path. `onIngress` (provenance + detectors + ledger)
   then `onMemoryWrite` (the promotion gate).
 
 An attack "reaches durable memory" when the promotion verdict is `allow`.
@@ -40,8 +40,8 @@ Times three paths over many iterations with warmup, using
 `process.hrtime.bigint()`, and reports p50 / p95 / p99 / mean in microseconds:
 
 - **baseline store**: hash the content and keep it. No firewall.
-- **Carapace ingress**: provenance + detectors + ledger append.
-- **Carapace full write**: ingress plus the promotion gate, modelling a real
+- **Carapax ingress**: provenance + detectors + ledger append.
+- **Carapax full write**: ingress plus the promotion gate, modelling a real
   accepted write (authenticated first-party input that promotes).
 
 These are **in-process** figures for the deterministic hot path. There is no
@@ -76,7 +76,7 @@ which is exactly the asymmetry the firewall is designed around.
 - Attacks are MINJA-style reproductions, not the exact paper dataset.
 - The fast detector is a deterministic heuristic. It misses paraphrase, several
   languages, and subtle bridging records. That is shown, not hidden.
-- Carapace's strength here is the **provenance gate, not detection**: untrusted
+- Carapax's strength here is the **provenance gate, not detection**: untrusted
   content cannot become durable memory even when detection misses it.
 - The model-detector seam (PromptGuard 2) is **not wired**. These are the
   heuristic-only floor; a wired classifier would only raise detection recall.

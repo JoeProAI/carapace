@@ -1,4 +1,4 @@
-# Carapace as a hosted service (Cloudflare Worker)
+# Carapax as a hosted service (Cloudflare Worker)
 
 Run the exact same memory-integrity firewall as a URL, so an agent can protect
 its memory writes with an API key instead of installing anything. This is the
@@ -118,7 +118,7 @@ npm run deploy
   controls its own agent's memory. The injection vectors that matter (web, tool,
   subagent, ambient channels) carry low trust ceilings by config and are gated
   regardless of what the caller claims.
-- **In-process vs. a network hop.** As a library Carapace is deterministic and
+- **In-process vs. a network hop.** As a library Carapax is deterministic and
   in-process. As a service the same logic sits behind one HTTP hop, which adds
   latency and a transport-trust assumption. Use the library when you can embed
   it; use the service when "add a URL" is the only integration you want.

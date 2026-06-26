@@ -1,18 +1,20 @@
-# Carapace
+# Carapax
 
 [![CI](https://github.com/JoeProAI/carapace/actions/workflows/ci.yml/badge.svg)](https://github.com/JoeProAI/carapace/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-informational.svg)](./LICENSE) ![Node](https://img.shields.io/badge/node-%3E%3D22-3c873a.svg)
 
 **The shell around your agent's brain.** A deterministic memory-integrity firewall for memory-first agents.
 
-LlamaFirewall protects the session. Carapace protects the memory. It sits between everything an agent reads and the permanent memory it trusts, and it refuses to let untrusted input become durable belief without earning it.
+> Carapax was previously named Carapace. The product brand is now Carapax; the npm package and code identifiers (`@openclaw/carapace`, `createCarapace`) keep the `carapace` name for now to avoid breaking installs.
+
+LlamaFirewall protects the session. Carapax protects the memory. It sits between everything an agent reads and the permanent memory it trusts, and it refuses to let untrusted input become durable belief without earning it.
 
 See [`SPEC.md`](./SPEC.md) for the full design, threat model, and roadmap.
 
 ## Why
 
-OpenClaw treats the LLM as disposable and the memory stack as the real intelligence. That makes memory the crown jewel and the softest target. Today it is protected by a prompt: SOUL.md asks the model to refuse edits to protected files unless it sees the code word "KaKaw." That holds until a model decides not to follow it, which is the definition of prompt injection. Meanwhile the DREAMING pipeline auto-promotes web, wearable, and group-chat content into permanent memory with no provenance or trust checks. Carapace is the tollbooth on that road.
+OpenClaw treats the LLM as disposable and the memory stack as the real intelligence. That makes memory the crown jewel and the softest target. Today it is protected by a prompt: SOUL.md asks the model to refuse edits to protected files unless it sees the code word "KaKaw." That holds until a model decides not to follow it, which is the definition of prompt injection. Meanwhile the DREAMING pipeline auto-promotes web, wearable, and group-chat content into permanent memory with no provenance or trust checks. Carapax is the tollbooth on that road.
 
-Grounded in the memory-poisoning literature: arXiv:2601.05504 measures the MINJA attack at 95% injection success and proposes the exact two defenses Carapace implements (composite trust scoring and trust-aware memory sanitization).
+Grounded in the memory-poisoning literature: arXiv:2601.05504 measures the MINJA attack at 95% injection success and proposes the exact two defenses Carapax implements (composite trust scoring and trust-aware memory sanitization).
 
 ## Five planes plus a ledger
 
@@ -26,7 +28,7 @@ Every decision lands in an append-only, hash-chained ledger.
 
 ## See it run
 
-![Carapace computing trust verdicts, capability checks, and a hash-chained ledger at runtime](docs/carapace-demo.gif)
+![Carapax computing trust verdicts, capability checks, and a hash-chained ledger at runtime](docs/carapace-demo.gif)
 
 ```bash
 npm install
@@ -128,7 +130,7 @@ const memory = withCarapace(new MemoryClient({ apiKey }), { gate: localGate() })
 await memory.add(messages, { user_id: "u1" }); // gated in-process, then stored
 ```
 
-To run the gate as a hosted service instead of embedding the firewall, swap `localGate()` for `remoteGate({ apiKey, host })` pointed at the Carapace Worker (see `worker/`). The wrapper returns the same client type, so existing code keeps working.
+To run the gate as a hosted service instead of embedding the firewall, swap `localGate()` for `remoteGate({ apiKey, host })` pointed at the Carapax Worker (see `worker/`). The wrapper returns the same client type, so existing code keeps working.
 
 **Provenance is the integrator's job.** The gate decides on provenance, and only you know where each message actually came from. The defaults assume the `user` role is the authenticated principal (T0) and `assistant` is first-party tool output (T1). That is correct for a single-user assistant; it is wrong for a multi-user or adversarial-user product, where you must label untrusted messages with their real channel:
 
@@ -175,6 +177,6 @@ provenance and trust derivation, the promotion gate, trust-aware recall with tem
 
 Attack recall by family (heuristic -> composite): extraction 1/2 -> 2/2, identity 2/2 -> 2/2, indirect 4/7 -> 5/7, minja-bridging 0/4 -> 0/4, multilingual 0/4 -> 1/4, obfuscation 4/6 -> 6/6, paraphrase 0/2 -> 0/2, plain 3/3 -> 3/3. The model adds 5 catches (mostly obfuscation, extraction, multilingual) with no added false positives. It only raises the injection signal; promotion still decides on provenance, so the gate's guarantees are unchanged. Reproduce with `wrangler dev` (or `wrangler dev --remote`) and a Workers-AI-enabled `CLOUDFLARE_API_TOKEN`, then `npm run measure:model`.
 
-**On the numbers:** figures cited in `SPEC.md` (attack-success rates, MINJA) are published results from prior work (LlamaFirewall, arXiv:2601.05504) that motivate Carapace. They are not Carapace's own benchmarks. Carapace has not been independently benchmarked yet; when it is, the numbers and the method to reproduce them will live here.
+**On the numbers:** figures cited in `SPEC.md` (attack-success rates, MINJA) are published results from prior work (LlamaFirewall, arXiv:2601.05504) that motivate Carapax. They are not Carapax's own benchmarks. Carapax has not been independently benchmarked yet; when it is, the numbers and the method to reproduce them will live here.
 
 MIT. Built by JoeProAI.

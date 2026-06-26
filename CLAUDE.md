@@ -1,6 +1,6 @@
-# Carapace — Claude Code project context
+# Carapax — Claude Code project context
 
-Carapace is a deterministic memory-integrity firewall for memory-first AI agents (TypeScript, ESM, Node >=22). Read `SPEC.md` for the full design and `../HANDOFF.md` for the backlog and working agreements.
+Carapax (the product formerly named Carapace; the npm package and code identifiers keep the `carapace` name for now) is a deterministic memory-integrity firewall for memory-first AI agents (TypeScript, ESM, Node >=22). Read `SPEC.md` for the full design and `../HANDOFF.md` for the backlog and working agreements.
 
 ## What it does
 Five planes plus a ledger: Ingress (tag provenance + score trust), Recall (trust-aware retrieval with temporal decay), Promotion (gate durable-memory writes), Soul (Ed25519 capability tokens enforce protected files), Egress (block secret exfil). Every decision lands in a hash-chained ledger. Trust is a property of provenance, not repetition.
