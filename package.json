@@ -5,6 +5,15 @@
   "type": "module",
   "license": "MIT",
   "author": "JoeProAI",
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "exports": {
     ".": "./src/index.ts",
     "./adapters/mem0": "./src/adapters/mem0.ts"
