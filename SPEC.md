@@ -1,6 +1,8 @@
-# Carapace
+# Carapax
 
 **The shell around your agent's brain.**
+
+> Carapax was previously named Carapace. The product brand is now Carapax; the npm package and code identifiers (for example `CarapaceConfig`) keep the `carapace` name for now.
 
 A deterministic security plane for memory-first agents. It sits between everything an agent reads and the permanent memory it trusts, and it refuses to let untrusted input become durable belief without earning it.
 
@@ -10,7 +12,7 @@ Version 0.1 spec. Last updated 2026-05-29.
 
 ## The one-paragraph version
 
-Memory-first agents like OpenClaw treat the LLM as disposable and the memory stack as the real intelligence. That makes memory the crown jewel and the softest target. Right now OpenClaw protects that memory with a prompt: SOUL.md tells the model to refuse edits to protected files unless it sees the code word "KaKaw," and to flag injection. That works exactly until a model decides not to follow it, which is the whole definition of prompt injection. Carapace moves that promise out of the prompt and into a runtime that the model cannot talk its way around. Untrusted content gets tagged at ingress, scored for trust, and quarantined. The DREAMING promotion pipeline cannot write to durable memory unless content clears integrity checks. Protected files are hash-chained and only mutable with a real signed capability, not a word in a chat. Every decision lands in an append-only, tamper-evident ledger.
+Memory-first agents like OpenClaw treat the LLM as disposable and the memory stack as the real intelligence. That makes memory the crown jewel and the softest target. Right now OpenClaw protects that memory with a prompt: SOUL.md tells the model to refuse edits to protected files unless it sees the code word "KaKaw," and to flag injection. That works exactly until a model decides not to follow it, which is the whole definition of prompt injection. Carapax moves that promise out of the prompt and into a runtime that the model cannot talk its way around. Untrusted content gets tagged at ingress, scored for trust, and quarantined. The DREAMING promotion pipeline cannot write to durable memory unless content clears integrity checks. Protected files are hash-chained and only mutable with a real signed capability, not a word in a chat. Every decision lands in an append-only, tamper-evident ledger.
 
 ---
 
@@ -22,9 +24,9 @@ LlamaFirewall (Meta, the current reference implementation) is a policy engine wr
 
 Memory poisoning is the attack that does not end when the conversation ends. You plant a fake "successful experience" or a false fact, it gets promoted into long-term store, and it fires days later on an unrelated trigger. The agent then defends a belief it should never have learned. Session-scoped guardrails never see it, because by the time it activates, the poisoned input is ancient history and looks like the agent's own memory.
 
-That is the gap Carapace fills. It is not a better injection classifier. It is the missing **memory integrity plane**: provenance, trust-gated promotion, quarantine, soul integrity, and tamper-evident audit. It composes with LlamaFirewall rather than replacing it. PromptGuard 2 can be one of the detectors Carapace calls. The difference is Carapace owns the boundary between "the agent read this" and "the agent believes this."
+That is the gap Carapax fills. It is not a better injection classifier. It is the missing **memory integrity plane**: provenance, trust-gated promotion, quarantine, soul integrity, and tamper-evident audit. It composes with LlamaFirewall rather than replacing it. PromptGuard 2 can be one of the detectors Carapax calls. The difference is Carapax owns the boundary between "the agent read this" and "the agent believes this."
 
-For OpenClaw specifically, this is not theoretical. The DREAMING pipeline already auto-promotes short-term context to durable memory across Light, Deep, and REM phases, tracked in `memory/.dreams/phase-signals.json` by hit count. Nothing in that path checks where a chunk came from or whether it is hostile. Ambient transcripts from a Limitless wearable, scraped web pages from crawl4ai, and messages from shared Discord groups all flow into the same corpus that feeds promotion. That is a memory-poisoning superhighway with no tollbooth. Carapace is the tollbooth.
+For OpenClaw specifically, this is not theoretical. The DREAMING pipeline already auto-promotes short-term context to durable memory across Light, Deep, and REM phases, tracked in `memory/.dreams/phase-signals.json` by hit count. Nothing in that path checks where a chunk came from or whether it is hostile. Ambient transcripts from a Limitless wearable, scraped web pages from crawl4ai, and messages from shared Discord groups all flow into the same corpus that feeds promotion. That is a memory-poisoning superhighway with no tollbooth. Carapax is the tollbooth.
 
 ---
 
@@ -80,7 +82,7 @@ The core invariant: **trust is a property of provenance, not of repetition.** A1
 
 ## Architecture
 
-Five planes plus a ledger. Each plane is a checkpoint on a path that data already travels in OpenClaw. Carapace inserts itself at those boundaries as an OpenClaw extension, so it works without core changes, the same integration contract Lobster uses.
+Five planes plus a ledger. Each plane is a checkpoint on a path that data already travels in OpenClaw. Carapax inserts itself at those boundaries as an OpenClaw extension, so it works without core changes, the same integration contract Lobster uses.
 
 ```
                           ┌─────────────────────────────────────────┐
@@ -125,7 +127,7 @@ Detection runs heuristics first (cheap, deterministic, sub-millisecond) then an 
 
 ### Plane 2 — Recall
 
-Wraps `memory_search` and the ChromaDB query path. Results are filtered by trust before they reach the model. Quarantined and T3 content can be returned only when the caller explicitly asks for low-trust material, and it comes back labeled, never silently blended with T0/T1 facts. This neuters A5: even if something is injected directly into the vector store, it lands without a valid Carapace provenance record, so recall treats it as untrusted-unknown and refuses to surface it as fact.
+Wraps `memory_search` and the ChromaDB query path. Results are filtered by trust before they reach the model. Quarantined and T3 content can be returned only when the caller explicitly asks for low-trust material, and it comes back labeled, never silently blended with T0/T1 facts. This neuters A5: even if something is injected directly into the vector store, it lands without a valid Carapax provenance record, so recall treats it as untrusted-unknown and refuses to surface it as fact.
 
 Recall also applies the two-part memory-sanitization defense from arXiv:2601.05504: temporal decay, so a one-shot injected memory that is never re-corroborated loses recall weight over a configurable half-life while genuinely recurring facts stay hot, and pattern-based filtering, so stored content that trips injection heuristics at read time is dropped rather than served. The scaffold implements both in `recall.ts`.
 
@@ -139,14 +141,14 @@ This is the plane that does not exist anywhere else. It gates the DREAMING pipel
 4. **Identity bounds**: the write must not contradict or attempt to amend SOUL.md/IDENTITY.md. Those are not "facts the agent learned," they are constitution.
 5. **Rate and novelty limits**: a flood of similar low-novelty writes is throttled and reviewed, which is the defense against A6 drift.
 
-Promotion is asynchronous and already runs in a background dreaming cycle, so the latency budget here is generous. Carapace can afford the model pass on every candidate. Rejected candidates are logged with reasons and parked in a review queue Joe can scan.
+Promotion is asynchronous and already runs in a background dreaming cycle, so the latency budget here is generous. Carapax can afford the model pass on every candidate. Rejected candidates are logged with reasons and parked in a review queue Joe can scan.
 
 ### Plane 4 — Soul integrity
 
 Turns SOUL.md's prompt-based protection into enforcement.
 
-- On init, Carapace records a hash of each protected file and chains them: `chainHash[n] = sha256(fileHash[n] || chainHash[n-1])`. The head is stored signed.
-- Any write to a protected file is intercepted. Carapace verifies the diff is accompanied by a valid **capability token** before allowing it.
+- On init, Carapax records a hash of each protected file and chains them: `chainHash[n] = sha256(fileHash[n] || chainHash[n-1])`. The head is stored signed.
+- Any write to a protected file is intercepted. Carapax verifies the diff is accompanied by a valid **capability token** before allowing it.
 - A capability token is a short-lived, single-use grant signed by Joe's key (Ed25519). The "KaKaw" code word becomes the human-facing trigger that *mints* a token through an authenticated path, instead of being a string the model scans for in chat. Saying KaKaw in a Discord group does nothing, because that path cannot sign.
 - Unauthorized writes are rejected and the file is restored from the last signed-good state. The attempt is logged as a security event.
 
@@ -161,7 +163,7 @@ Wraps outbound actions (`message.send`, web posts, `git push`, `openclaw.invoke`
 
 ### Ledger
 
-Append-only, hash-chained record of every Carapace decision: ingress verdicts, promotions, rejections, soul-write attempts, egress blocks. Each entry chains to the previous (`entryHash = sha256(payload || prevHash)`), so tampering is detectable. This is the forensic spine. When something does go wrong, the ledger tells you exactly what got promoted, from where, and why it was allowed. It is also the data source for a future "brain health" dashboard in the OpenClaw Command Deck.
+Append-only, hash-chained record of every Carapax decision: ingress verdicts, promotions, rejections, soul-write attempts, egress blocks. Each entry chains to the previous (`entryHash = sha256(payload || prevHash)`), so tampering is detectable. This is the forensic spine. When something does go wrong, the ledger tells you exactly what got promoted, from where, and why it was allowed. It is also the data source for a future "brain health" dashboard in the OpenClaw Command Deck.
 
 ---
 
@@ -169,12 +171,12 @@ Append-only, hash-chained record of every Carapace decision: ingress verdicts, p
 
 The hard part of a memory firewall is not catching attacks. It is catching attacks without strangling the agent. arXiv:2601.05504 makes this concrete: memory sanitization that is too aggressive blocks every entry and the agent stops learning, too loose and subtle attacks slip through. The trust thresholds in `CarapaceConfig` (`promotionFloor`, `injectionQuarantineThreshold`, `recall.minTrust`, `recall.halfLifeDays`) are the calibration surface, and they are not guesses to ship blind.
 
-The plan: run the ledger in shadow mode first. Carapace logs every verdict without enforcing, Joe reviews the would-be rejects in the Command Deck, and the thresholds get tuned against his actual traffic before enforcement flips on. The review queue is the calibration instrument. A firewall that cries wolf gets disabled, and a disabled firewall protects nothing, so the tuning loop is a first-class feature, not an afterthought.
+The plan: run the ledger in shadow mode first. Carapax logs every verdict without enforcing, Joe reviews the would-be rejects in the Command Deck, and the thresholds get tuned against his actual traffic before enforcement flips on. The review queue is the calibration instrument. A firewall that cries wolf gets disabled, and a disabled firewall protects nothing, so the tuning loop is a first-class feature, not an afterthought.
 
-## What Carapace is not
+## What Carapax is not
 
 - **Not a content moderator.** It does not decide what is true or tasteful. It decides what is trusted enough to become permanent.
-- **Not a replacement for the model's judgment.** The model still reasons. Carapace just stops the model from being the only thing standing between hostile input and the vault.
+- **Not a replacement for the model's judgment.** The model still reasons. Carapax just stops the model from being the only thing standing between hostile input and the vault.
 - **Not cloud.** Everything runs locally on Joe's hardware. No content leaves the machine to get scored. This is the point: a privacy-first agent should not need a SaaS to stay sane.
 - **Not a wrapper that adds latency to every turn.** Ingress heuristics are sub-millisecond. The expensive checks live in the async promotion path where latency is free.
 
@@ -192,7 +194,7 @@ Ships as `@openclaw/carapace`, a plugin extension using the same contract as `lo
 
 Config lives under a `carapace` block in `openclaw.json`: trust-tier mappings per channel, the protected-file list (defaults to SOUL/IDENTITY/AGENTS/BOOTSTRAP), detector selection and thresholds, and the path to Joe's signing key.
 
-It composes with the existing KaKaw rule rather than ripping it out. SOUL.md keeps the human-readable boundary. Carapace makes it real.
+It composes with the existing KaKaw rule rather than ripping it out. SOUL.md keeps the human-readable boundary. Carapax makes it real.
 
 ---
 
@@ -219,10 +221,10 @@ Hardware reality check: the RTX 5080 already runs Gemma 4 at 9.6 GB and nomic-em
 
 **Phase 2.** Trust-aware recall over ChromaDB with provenance backfill. Egress alignment check. Ledger-backed brain-health dashboard.
 
-**Phase 3.** Portable core: extract the engine so it runs in front of any memory-first agent, not just OpenClaw. This is the open-source play. LlamaFirewall owns the session; Carapace owns the memory. Ship it as the standard memory-integrity layer and let clawd.run host it as a managed plane for every agent it runs.
+**Phase 3.** Portable core: extract the engine so it runs in front of any memory-first agent, not just OpenClaw. This is the open-source play. LlamaFirewall owns the session; Carapax owns the memory. Ship it as the standard memory-integrity layer and let clawd.run host it as a managed plane for every agent it runs.
 
 ---
 
 ## Naming
 
-Carapace is a lobster's shell: the hard exterior that protects the soft, vital body underneath. On-brand for the OpenClaw ecosystem, accurate to the function, and free of the "AI Guardian Shield" trope. The brain is soft. Carapace is the shell.
+Carapax is a lobster's shell: the hard exterior that protects the soft, vital body underneath. On-brand for the OpenClaw ecosystem, accurate to the function, and free of the "AI Guardian Shield" trope. The brain is soft. Carapax is the shell.

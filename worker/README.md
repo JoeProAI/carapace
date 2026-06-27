@@ -1,4 +1,4 @@
-# Carapace as a hosted service (Cloudflare Worker)
+# Carapax as a hosted service (Cloudflare Worker)
 
 Run the exact same memory-integrity firewall as a URL, so an agent can protect
 its memory writes with an API key instead of installing anything. This is the
@@ -118,7 +118,7 @@ npm run deploy
   controls its own agent's memory. The injection vectors that matter (web, tool,
   subagent, ambient channels) carry low trust ceilings by config and are gated
   regardless of what the caller claims.
-- **In-process vs. a network hop.** As a library Carapace is deterministic and
+- **In-process vs. a network hop.** As a library Carapax is deterministic and
   in-process. As a service the same logic sits behind one HTTP hop, which adds
   latency and a transport-trust assumption. Use the library when you can embed
   it; use the service when "add a URL" is the only integration you want.
@@ -126,8 +126,10 @@ npm run deploy
   and its honesty notes. The model detector is now wired here via Workers AI
   (`@cf/meta/llama-guard-3-8b`, since the specced `@cf/meta/llama-prompt-guard-2-86m`
   is not in Cloudflare's current catalog; override with `CARAPACE_MODEL_ID`).
-  Real before/after detection numbers require running against the edge
-  (`wrangler dev --remote` with a Workers-AI-enabled token), then
+  Measured before/after on the bench corpus (model used on 55/55 requests):
+  attack recall 14/30 (46.7%) heuristic-only -> 19/30 (63.3%) heuristic+model,
+  benign false-positive rate 1/25 (4.0%) unchanged. Reproduce with
+  `wrangler dev` (or `--remote`) and a Workers-AI-enabled token, then
   `npm run measure:model` from the repo root against the running Worker.
 - **Capability tokens.** Set `CARAPACE_AUTHORITY_PUBKEY` to verify Ed25519
   capability tokens against a real authority key. Without it the Worker
