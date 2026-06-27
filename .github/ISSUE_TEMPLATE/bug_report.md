@@ -24,7 +24,7 @@ Steps or a minimal code snippet. Include the provenance and config you passed, s
 
 ## Environment
 
-- Package version (`@openclaw/carapace`):
+- Package version (`carapax`):
 - Node version:
 - Core library or hosted Worker:
 

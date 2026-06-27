@@ -4,7 +4,7 @@
 
 **The shell around your agent's brain.** A deterministic memory-integrity firewall for memory-first agents.
 
-> Carapax was previously named Carapace. The product brand is now Carapax; the npm package and code identifiers (`@openclaw/carapace`, `createCarapace`) keep the `carapace` name for now to avoid breaking installs.
+> Carapax was previously named Carapace. The product brand and the npm package are now `carapax`; the code identifiers (`createCarapace`, `withCarapace`, `CARAPACE_MODEL_ID`) keep the `carapace` spelling for now to avoid churning the API surface.
 
 LlamaFirewall protects the session. Carapax protects the memory. It sits between everything an agent reads and the permanent memory it trusts, and it refuses to let untrusted input become durable belief without earning it.
 
@@ -99,7 +99,7 @@ Read it straight: normalization defeats the obfuscation bypasses (zero-width, sp
 ## Quickstart (integration)
 
 ```ts
-import { createCarapace, DEFAULT_CONFIG, type CarapaceConfig } from "@openclaw/carapace";
+import { createCarapace, DEFAULT_CONFIG, type CarapaceConfig } from "carapax";
 
 const config: CarapaceConfig = {
   ...DEFAULT_CONFIG,
@@ -124,7 +124,7 @@ Most memory layers do not want to learn the five-plane API. The Mem0 adapter wra
 
 ```ts
 import MemoryClient from "mem0ai";
-import { withCarapace, localGate } from "@openclaw/carapace/adapters/mem0";
+import { withCarapace, localGate } from "carapax/adapters/mem0";
 
 const memory = withCarapace(new MemoryClient({ apiKey }), { gate: localGate() });
 await memory.add(messages, { user_id: "u1" }); // gated in-process, then stored

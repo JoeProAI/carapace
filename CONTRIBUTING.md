@@ -1,6 +1,6 @@
 # Contributing to Carapax
 
-Carapax (npm package `@openclaw/carapace`) is the memory-integrity firewall for memory-first AI agents. Contributions are welcome. This guide covers the local setup and the rules that keep the project honest and deterministic.
+Carapax (npm package `carapax`) is the memory-integrity firewall for memory-first AI agents. Contributions are welcome. This guide covers the local setup and the rules that keep the project honest and deterministic.
 
 ## Setup
 

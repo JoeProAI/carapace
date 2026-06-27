@@ -8,12 +8,13 @@ All notable changes to this project are documented here. The format is based on 
 
 - `SECURITY.md` with a private vulnerability disclosure path.
 - `CONTRIBUTING.md` with the setup and verify gate.
-- `.github/workflows/publish.yml` to publish `@openclaw/carapace` to npm on a `v*` tag.
+- `.github/workflows/publish.yml` to publish the package to npm on a `v*` tag.
 - `files` allowlist and `publishConfig.access` in `package.json` for clean public publishing.
+- GitHub issue templates and a pull request template.
 
 ### Changed
 
-- Product brand presented as Carapax in documentation. The npm package and code identifiers keep the `carapace` name to avoid breaking installs.
+- Renamed the npm package from `@openclaw/carapace` to `carapax` to match the product brand. Code identifiers (`createCarapace`, `withCarapace`, `CARAPACE_MODEL_ID`) keep the `carapace` spelling for now.
 
 ## [0.1.0]
 
