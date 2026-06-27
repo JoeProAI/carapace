@@ -9,7 +9,7 @@
  * method delegated, so existing code keeps working.
  *
  *   import MemoryClient from "mem0ai";
- *   import { withCarapace, localGate } from "@openclaw/carapace/adapters/mem0";
+ *   import { withCarapace, localGate } from "carapax/adapters/mem0";
  *
  *   const memory = withCarapace(new MemoryClient({ apiKey }), { gate: localGate() });
  *   await memory.add(messages, { user_id: "u1" }); // gated, then stored

@@ -1,7 +1,7 @@
 {
-  "name": "@openclaw/carapace",
+  "name": "carapax",
   "version": "0.1.0",
-  "description": "Carapace: a deterministic memory-integrity firewall for memory-first agents. The shell around your agent's brain.",
+  "description": "Carapax: a deterministic memory-integrity firewall for memory-first agents. The shell around your agent's brain.",
   "type": "module",
   "license": "MIT",
   "author": "JoeProAI",

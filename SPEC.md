@@ -184,7 +184,7 @@ The plan: run the ledger in shadow mode first. Carapax logs every verdict withou
 
 ## Integration with OpenClaw
 
-Ships as `@openclaw/carapace`, a plugin extension using the same contract as `lobster` and `memory-core`. It registers:
+Ships to npm as `carapax`, and integrates with OpenClaw as a plugin extension using the same contract as `lobster` and `memory-core`. It registers:
 
 - Middleware on the memory write path (hooks `memory-core` / `memory-lancedb`), which is where promotion gating attaches.
 - A wrapper around `memory_search` for trust-aware recall.

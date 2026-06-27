@@ -1,6 +1,6 @@
 # Security policy
 
-Carapax (package `@openclaw/carapace`) is a memory-integrity firewall, so the security of the project itself matters. Thank you for helping keep it sound.
+Carapax (npm package `carapax`) is a memory-integrity firewall, so the security of the project itself matters. Thank you for helping keep it sound.
 
 ## Reporting a vulnerability
 
