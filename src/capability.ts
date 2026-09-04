@@ -34,7 +34,7 @@ const unb64url = (data: string): string => Buffer.from(data, "base64url").toStri
 export const mintCapability = (privateKeyPem: string, grant: CapabilityGrant): string => {
   const payload = canonical(grant);
   const sig = sign(null, Buffer.from(payload, "utf8"), privateKeyPem);
-  return `${b64url(payload)}.${sig.toString("base64url")}`;
+  return `${b64url(payload)}.${Buffer.from(sig).toString("base64url")}`;
 };
 
 export interface VerifyResult {

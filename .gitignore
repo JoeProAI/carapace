@@ -1,6 +1,9 @@
 node_modules/
 dist/
+.npm-cache/
 *.tsbuildinfo
 *.ledger
 .env
+.env.*
+!.env.example
 .DS_Store
