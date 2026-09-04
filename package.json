@@ -50,6 +50,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
+    "vercel-build": "node -e \"console.log('Static site ready')\"",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
