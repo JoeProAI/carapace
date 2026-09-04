@@ -6,6 +6,9 @@ All notable changes to this project are documented here. The format is based on 
 
 ### Added
 
+- A compiled JavaScript package with bundled TypeScript declarations for standard Node consumers.
+- A package smoke test that installs the packed artifact and imports both public entry points.
+- npm discovery metadata and a direct installation quickstart.
 - `SECURITY.md` with a private vulnerability disclosure path.
 - `CONTRIBUTING.md` with the setup and verify gate.
 - `.github/workflows/publish.yml` to publish the package to npm on a `v*` tag.
@@ -14,6 +17,7 @@ All notable changes to this project are documented here. The format is based on 
 
 ### Changed
 
+- Upgraded the test toolchain to remove known vulnerable development dependencies.
 - Renamed the npm package from `@openclaw/carapace` to `carapax` to match the product brand. Code identifiers (`createCarapace`, `withCarapace`, `CARAPACE_MODEL_ID`) keep the `carapace` spelling for now.
 
 ## [0.1.0]

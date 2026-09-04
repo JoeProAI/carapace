@@ -169,7 +169,7 @@ const messageText = (message: Mem0Message): string =>
 const generateEphemeralPublicKeyPem = (): string => {
   const { publicKey } = generateKeyPairSync("ed25519");
   const pem = publicKey.export({ type: "spki", format: "pem" });
-  return typeof pem === "string" ? pem : pem.toString("utf8");
+  return typeof pem === "string" ? pem : Buffer.from(pem).toString("utf8");
 };
 
 const buildProvenance = (base: ProvenanceDefaults, override?: Partial<Provenance>): Provenance => {
