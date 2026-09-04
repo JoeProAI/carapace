@@ -1,6 +1,6 @@
 {
   "name": "carapax",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Carapax: a deterministic memory-integrity firewall for memory-first agents. The shell around your agent's brain.",
   "type": "module",
   "license": "MIT",

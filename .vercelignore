@@ -1,0 +1,16 @@
+.git/
+.github/
+.npm-cache/
+node_modules/
+dist/
+src/
+tests/
+worker/
+bench/
+examples/
+scripts/
+*.tsbuildinfo
+*.ledger
+.env
+.env.*
+!.env.example
