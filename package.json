@@ -51,6 +51,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "vercel-build": "node -e \"console.log('Static site ready')\"",
+    "site:fixtures": "npm run build && node scripts/site-fixtures.mjs",
+    "site:check": "npm run build && node scripts/site-check.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
