@@ -1,4 +1,5 @@
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
+import assert from "node:assert/strict";
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
@@ -29,6 +30,8 @@ try {
     "dist/index.d.ts",
     "dist/adapters/mem0.js",
     "dist/adapters/mem0.d.ts",
+    "dist/cli.js",
+    "dist/demo.js",
   ];
   const missing = requiredPaths.filter((path) => !packagedPaths.has(path));
   if (missing.length > 0) {
@@ -55,7 +58,19 @@ try {
   });
 
   const installed = JSON.parse(readFileSync(join(consumer, "node_modules", "carapax", "package.json"), "utf8"));
-  console.log(`package smoke passed: carapax@${installed.version}, core and Mem0 adapter import in Node`);
+  assert.equal(installed.bin.carapax, "./dist/cli.js");
+  const cli = join(consumer, "node_modules", "carapax", "dist", "cli.js");
+  const result = JSON.parse(execFileSync(process.execPath, [cli, "demo", "--json"], { encoding: "utf8" }));
+  assert.deepEqual(result.scenarios.map((s) => s.verdict), ["reject", "allow", "reject"]);
+  assert.equal(result.stored.length, 1);
+  assert.equal(result.ledger.valid, true);
+  assert.match(execFileSync(process.execPath, [cli, "--help"], { encoding: "utf8" }), /Usage: carapax demo/);
+  assert.match(execFileSync(process.execPath, [cli, "demo"], { encoding: "utf8" }), /Stored 1\/3/);
+  assert.equal(spawnSync(process.execPath, [cli, "typo"], { encoding: "utf8" }).status, 1);
+  // Exercise npm's generated executable shim, not just the underlying JS file.
+  const shim = runNpm(["exec", "--offline", "--", "carapax", "demo", "--json"], { cwd: consumer, encoding: "utf8" });
+  assert.equal(JSON.parse(shim).stored.length, 1);
+  console.log(`package smoke passed: carapax@${installed.version}, public imports and installed CLI verified`);
 } finally {
   rmSync(scratch, { recursive: true, force: true });
 }

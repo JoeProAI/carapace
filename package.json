@@ -1,11 +1,11 @@
 {
   "name": "carapax",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Carapax: a deterministic memory-integrity firewall for memory-first agents. The shell around your agent's brain.",
   "type": "module",
   "license": "MIT",
   "author": "JoeProAI",
-  "homepage": "https://github.com/JoeProAI/carapace#readme",
+  "homepage": "https://carapax.moltagent.run/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JoeProAI/carapace.git"
@@ -35,6 +35,9 @@
     "access": "public"
   },
   "main": "./dist/index.js",
+  "bin": {
+    "carapax": "./dist/cli.js"
+  },
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
@@ -60,6 +63,7 @@
     "verify": "npm run typecheck && npm test && npm run smoke:package",
     "prepack": "npm run build && node scripts/package-smoke.mjs",
     "demo": "tsx examples/demo.ts",
+    "demo:quick": "npm run build && node dist/cli.js demo",
     "redteam": "tsx examples/redteam.ts",
     "bench": "tsx bench/run.ts",
     "measure:model": "tsx bench/measure-model.ts",

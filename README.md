@@ -10,6 +10,18 @@ LlamaFirewall protects the session. Carapax protects the memory. It sits between
 
 See [`SPEC.md`](./SPEC.md) for the full design, threat model, and roadmap.
 
+## Try it without an account
+
+Node.js 22+ is required. Run three real decisions with synthetic inputs:
+
+```sh
+npx carapax@0.1.2 demo
+```
+
+An injected web instruction is rejected, a trusted preference is allowed, and the same preference from an untrusted web source is rejected. Only the allowed candidate reaches an in-memory store. Installation downloads the package; the demo itself makes no network calls, reads no personal files, and sends no telemetry. Running it does not install protection into your agent.
+
+Use `npx carapax@0.1.2 demo --json` for inspectable results. Then follow the [five-minute Mem0 example](https://github.com/JoeProAI/carapace/tree/main/examples/mem0), or the core integration below. [Website](https://carapax.moltagent.run/) · [Integration help](https://github.com/JoeProAI/carapace/issues/new/choose).
+
 ## Install
 
 ```bash
@@ -150,6 +162,8 @@ if (cp.onMemoryWrite({ envelope: env, target: "MEMORY.md" }).verdict !== "allow"
 ```
 
 ## Drop-in adapter (Mem0)
+
+Start with the [complete runnable Mem0 example](https://github.com/JoeProAI/carapace/tree/main/examples/mem0): safe unlabeled-input defaults, a no-key local store, a separately opted-in hosted run, and a mocked-transport check against the actual SDK. Only `add` is gated; `update` and other methods are not protected by this wrapper.
 
 Most memory layers do not want to learn the five-plane API. The Mem0 adapter wraps an existing client so every `add` passes through the promotion gate first, in roughly three lines. Every other method (search, get, update, delete) is delegated untouched.
 

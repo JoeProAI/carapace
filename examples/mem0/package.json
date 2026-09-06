@@ -1,0 +1,12 @@
+{
+  "name": "carapax-mem0-example",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node demo.mjs",
+    "test": "node --test integration.check.mjs",
+    "live": "node hosted.mjs --live"
+  },
+  "dependencies": { "carapax": "0.1.1", "mem0ai": "3.1.8" }
+}
