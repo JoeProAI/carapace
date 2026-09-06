@@ -4,6 +4,19 @@ All notable changes to this project are documented here. The format is based on 
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-09-06
+
+### Added
+
+- `npx carapax@0.1.2 demo` with human-readable and JSON output, three computed decisions, and a verified local ledger. No model, API key, or personal data required.
+- Installed-package CLI smoke tests and demo regression tests.
+- A standalone Mem0 example with untrusted defaults, explicit provenance, an opt-in hosted path, and pinned-SDK mocked-transport tests in CI.
+
+### Changed
+
+- Package homepage now points to `https://carapax.moltagent.run/`.
+- README starts with a no-account trial and links to integration help.
+
 ## [0.1.1] - 2026-09-04
 
 ### Added
