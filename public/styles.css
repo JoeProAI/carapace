@@ -293,6 +293,16 @@ h1 {
   min-width: 277px;
   text-align: left;
   font-size: 12px;
+  max-width: 100%;
+}
+.install-command code {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.trial-note {
+  font-size: 11px;
+  margin: 10px 0 0;
+  max-width: 350px;
 }
 .install-command > span:first-child {
   color: #757e65;
@@ -978,6 +988,71 @@ summary::-webkit-details-marker {
   line-height: 1.8;
   color: #636c58;
   max-width: 320px;
+}
+.onboarding-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  list-style: none;
+  margin: 44px 0 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+.onboarding-steps > li {
+  padding: 28px 26px 22px;
+  min-width: 0;
+}
+.onboarding-steps > li:first-child {
+  padding-left: 0;
+}
+.onboarding-steps > li:last-child {
+  padding-right: 0;
+}
+.onboarding-steps > li + li {
+  border-left: 1px solid var(--line);
+}
+.onboarding-steps h3 {
+  font-size: 25px;
+  margin: 14px 0;
+  letter-spacing: -0.7px;
+}
+.onboarding-steps p {
+  font-size: 13px;
+  margin: 0 0 22px;
+}
+.onboarding-steps .install-command {
+  min-width: 0;
+  width: 100%;
+  gap: 8px;
+  background: var(--lime);
+}
+.onboarding-steps .step-detail {
+  font-size: 11px;
+  margin: 15px 0 0;
+}
+.onboarding-boundary {
+  padding: 18px 0;
+  border-block: 1px solid var(--line);
+  font-size: 12px;
+  margin: 0 0 70px;
+}
+@media (max-width: 800px) {
+  .onboarding-steps {
+    grid-template-columns: 1fr;
+    margin-top: 28px;
+  }
+  .onboarding-steps > li {
+    padding: 24px 0;
+  }
+  .onboarding-steps > li + li {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .onboarding-steps .install-command {
+    width: max-content;
+  }
+  .onboarding-boundary {
+    margin-bottom: 44px;
+  }
 }
 .integration-grid {
   display: grid;

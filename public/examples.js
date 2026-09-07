@@ -27,23 +27,29 @@ console.log(decision.verdict); // 'reject'`,
   },
   mem0: {
     filename: "mem0-boundary.mjs",
-    note: "Install mem0ai separately and set MEM0_API_KEY in your server environment. Only add is gated. Label external inputs explicitly; default user messages assume the trusted principal.",
+    note: "Server-side example for mem0ai 3.x; install the SDK separately and set MEM0_API_KEY privately. Only add is gated. Unlabeled input is rejected here. Assign trusted provenance only in authenticated application code. Use the starter above for a no-key local run.",
     code: `import MemoryClient from 'mem0ai';
 import { withCarapace, localGate }
   from 'carapax/adapters/mem0';
 
+const untrusted = {
+  source: 'unknown', channel: 'web', authenticated: false,
+};
 const memory = withCarapace(
   new MemoryClient({
     apiKey: process.env.MEM0_API_KEY,
   }),
-  { gate: localGate() },
+  {
+    gate: localGate(),
+    roleProvenance: { user: untrusted, assistant: untrusted },
+  },
 );
 
 // External content must carry its real provenance.
 const result = await memory.add([
   { role: 'user', content: 'A claim from the web.' },
 ], {
-  user_id: 'example-user',
+  userId: 'example-user',
   carapaceProvenance: {
     source: 'web:example.com',
     channel: 'web',
