@@ -4,6 +4,14 @@ The production site is the static HTML, CSS, JavaScript, and SVG in `public/`.
 Vercel serves that directory using the `vercel-build` script. No framework or
 new runtime dependency is required.
 
+## Adoption path
+
+The hero and Get started section promote the published `npx carapax@0.1.2 demo` command, then the Mem0 starter, then a public GitHub integration-help template. Keep the command and release labels aligned with the published package. Do not deploy an unpublished version's command.
+
+The local demo uses synthetic inputs and does not install agent protection. The starter's local stand-in needs no key, while its separately opted-in hosted mode can incur charges. Help requests are public; the page and issue template warn against sharing private data. There is no new analytics or automatic outreach.
+
+Canonical and Open Graph URLs point to `https://carapax.moltagent.run/`.
+
 ## Recorded scenario explorer
 
 The explorer deliberately displays recorded evaluations instead of claiming
